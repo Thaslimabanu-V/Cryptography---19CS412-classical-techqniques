@@ -32,41 +32,58 @@ Implementation using C or pyhton code
 ## PROGRAM:
 PROGRAM:
 CaearCipher.
+```
+
+#include <ctype.h>
 #include <stdio.h>
-#include <stdlib.h>
- 
-// Function to perform Caesar Cipher encryption void caesarEncrypt(char *text, int key) {
-   for (int i = 0; text[i] != '\0'; i++) { char c = text[i];
-// Check if the character is an uppercase letter 
-    if (c >= 'A' && c <= 'Z') {
-    text[i] = ((c - 'A' + key) % 26 + 26) % 26 + 'A';
+#include <string.h>
+
+int main(void) {
+    char plaintext[500], keyword[100], ciphertext[500];
+    size_t keyLength, keyIndex = 0;
+
+    printf("Enter the plaintext: ");
+    fgets(plaintext, sizeof plaintext, stdin);
+    plaintext[strcspn(plaintext, "\n")] = '\0';
+
+    printf("Enter the keyword: ");
+    fgets(keyword, sizeof keyword, stdin);
+    keyword[strcspn(keyword, "\n")] = '\0';
+
+    keyLength = strlen(keyword);
+
+    if (keyLength == 0)
+        return 1;
+
+    for (size_t i = 0; i < keyLength; i++) {
+        if (!isalpha((unsigned char)keyword[i]))
+            return 1;
+
+        keyword[i] = toupper((unsigned char)keyword[i]);
     }
-// Check if the character is a lowercase letter
-    else if (c >= 'a' && c <= 'z') {
-        text[i] = ((c - 'a' + key) % 26 + 26) % 26 + 'a';
+
+    for (size_t i = 0; plaintext[i] != '\0'; i++) {
+        unsigned char ch = (unsigned char)plaintext[i];
+
+        if (isalpha(ch)) {
+            int p = toupper(ch) - 'A';
+            int k = keyword[keyIndex % keyLength] - 'A';
+
+            ciphertext[i] = 'A' + (p + k) % 26;
+            keyIndex++;
+        }
+        else {
+            ciphertext[i] = ch;
+        }
     }
-// Ignore non-alphabetic characters
-    }
+
+    ciphertext[strlen(plaintext)] = '\0';
+
+    printf("Ciphertext: %s\n", ciphertext);
+
+    return 0;
 }
-
-// Function to perform Caesar Cipher decryption 
-void caesarDecrypt(char *text, int key) {
-// Decryption is the same as encryption with a negative key 
-caesarEncrypt(text, -key);
-}
-
-int main() {
-char message[100]; // Declare a character array to store the message int key;
-
-printf("Enter the message to encrypt: ");
-fgets(message, sizeof(message), stdin); // Read input from the user printf("Enter the Caesar Cipher key (an integer): ");
-scanf("%d", &key); // Read the key from the user
-// Encrypt the message using the Caesar Cipher caesarEncrypt(message, key); printf("Encrypted Message: %s", message);
-// Decrypt the message back to the original
- 
-caesarDecrypt(message, key); printf("Decrypted Message: %s", message); return 0;
-}
-
+```
 
 ## OUTPUT:
 OUTPUT:
@@ -75,6 +92,8 @@ Simulating Caesar Cipher
 
 Input : Anna University
 Encrypted Message : Dqqd Xqlyhuvlwb Decrypted Message : Anna University
+<img width="1005" height="233" alt="image" src="https://github.com/user-attachments/assets/62d3f7d0-2b55-4ebf-b420-fa2cb539769e" />
+
 
 ## RESULT:
 The program is executed successfully
